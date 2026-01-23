@@ -24,7 +24,7 @@ const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
 /* 🔹 USE ONLY ONE ENV VARIABLE */
-const dbUrl = process.env.MONGODB_URI;
+const dbUrl = process.env.ATLASDB_URL;
 
 /* ❌ Safety check */
 if (!dbUrl) {
@@ -100,14 +100,16 @@ app.use((req, res, next) => {
 
 /* -------------------- ROUTES -------------------- */
 
-/* Root route - redirect to listings */
+/* Root route - redirect to listings (MUST come before userRouter) */
 app.get("/", (req, res) => {
   res.redirect("/listings");
 });
 
+/* User routes (login, signup, logout) - mount at root */
+app.use("/", userRouter);
+
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
-app.use("/", userRouter);
 
 /* -------------------- ERROR HANDLING -------------------- */
 
